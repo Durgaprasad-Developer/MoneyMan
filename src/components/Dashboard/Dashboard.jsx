@@ -1,9 +1,20 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { useApi } from '../../hooks/useApi';
 import { formatCurrency, formatCompact } from '../../utils/formatters';
 import { CATEGORY_COLORS, PORTFOLIO_COLORS } from '../../utils/constants';
 import './Dashboard.css';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 10 },
+  show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+};
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
@@ -39,56 +50,49 @@ export default function Dashboard() {
   const { customer, spendingTrend, spendingBreakdown, portfolioData, goals, totalPortfolioValue, recommendationCount, nudgeCount } = data;
 
   return (
-    <div className="page-content page-enter">
-      <div className="section-title">
+    <motion.div 
+      className="page-content bento-grid"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.div variants={itemVariants} className="bento-col-span-full section-title">
         <span className="material-symbols-rounded icon">dashboard</span> Dashboard
-      </div>
+      </motion.div>
 
-      {/* Summary Cards */}
-      <div className="dash-summary-grid animate-fade-in-up">
-        <div className="glass-card dash-stat-card">
-          <div className="dash-stat-icon" style={{ background: 'rgba(67, 97, 238, 0.15)' }}>
-            <span className="material-symbols-rounded" style={{ color: 'var(--accent-blue)' }}>account_balance_wallet</span>
-          </div>
-          <div>
-            <div className="stat-value gradient-text">{formatCompact(totalPortfolioValue)}</div>
-            <div className="stat-label">Total Portfolio</div>
-          </div>
+      {/* Summary Cards in Bento style */}
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.02 }} className="bento-card card-blue dash-stat-card bento-col-span-full">
+        <div className="dash-stat-icon" style={{ background: 'rgba(79, 70, 229, 0.1)' }}>
+          <span className="material-symbols-rounded icon">account_balance_wallet</span>
         </div>
-
-        <div className="glass-card dash-stat-card">
-          <div className="dash-stat-icon" style={{ background: 'rgba(6, 214, 160, 0.15)' }}>
-            <span className="material-symbols-rounded" style={{ color: 'var(--accent-teal)' }}>trending_up</span>
-          </div>
-          <div>
-            <div className="stat-value" style={{ color: 'var(--accent-teal)' }}>{formatCompact(customer.monthlyIncome)}</div>
-            <div className="stat-label">Monthly Income</div>
-          </div>
+        <div>
+          <div className="stat-value-lg">{formatCompact(totalPortfolioValue)}</div>
+          <div className="stat-label text-muted">Total Portfolio</div>
         </div>
+      </motion.div>
 
-        <div className="glass-card dash-stat-card">
-          <div className="dash-stat-icon" style={{ background: 'rgba(123, 47, 247, 0.15)' }}>
-            <span className="material-symbols-rounded" style={{ color: 'var(--accent-purple)' }}>shield</span>
-          </div>
-          <div>
-            <div className="stat-value" style={{ color: 'var(--accent-purple)' }}>{customer.riskProfile.riskScore}</div>
-            <div className="stat-label">Risk Score</div>
-          </div>
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.02 }} className="bento-card card-green dash-stat-card">
+        <div className="dash-stat-icon" style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
+          <span className="material-symbols-rounded icon">trending_up</span>
         </div>
-
-        <div className="glass-card dash-stat-card">
-          <div className="dash-stat-icon" style={{ background: 'rgba(255, 107, 53, 0.15)' }}>
-            <span className="material-symbols-rounded" style={{ color: 'var(--accent-orange)' }}>notifications_active</span>
-          </div>
-          <div>
-            <div className="stat-value" style={{ color: 'var(--accent-orange)' }}>{recommendationCount + nudgeCount}</div>
-            <div className="stat-label">Insights Ready</div>
-          </div>
+        <div>
+          <div className="stat-value">{formatCompact(customer.monthlyIncome)}</div>
+          <div className="stat-label text-muted">Monthly Income</div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Spending Trend Chart */}
-      <div className="glass-card-static dash-chart-card animate-fade-in-up delay-1">
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.02 }} className="bento-card card-yellow dash-stat-card">
+        <div className="dash-stat-icon" style={{ background: 'rgba(253, 224, 71, 0.1)' }}>
+          <span className="material-symbols-rounded icon">shield</span>
+        </div>
+        <div>
+          <div className="stat-value">{customer.riskProfile.riskScore}</div>
+          <div className="stat-label text-muted">Risk Score</div>
+        </div>
+      </motion.div>
+
+      {/* Spending Trend Chart - Takes full width (2 columns) */}
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card dash-chart-card bento-col-span-full">
         <h3 className="dash-chart-title">
           <span className="material-symbols-rounded icon-sm">show_chart</span>
           Monthly Spending Trend
@@ -117,10 +121,10 @@ export default function Dashboard() {
           <span className="legend-dot" style={{ background: '#ef476f' }} /> Spending
           <span className="legend-dot" style={{ background: '#4361ee', marginLeft: 12 }} /> Investment
         </div>
-      </div>
+      </motion.div>
 
-      {/* Portfolio Allocation */}
-      <div className="glass-card-static dash-chart-card animate-fade-in-up delay-2">
+      {/* Portfolio Allocation - Takes full width */}
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card dash-chart-card bento-col-span-full">
         <h3 className="dash-chart-title">
           <span className="material-symbols-rounded icon-sm">pie_chart</span>
           Portfolio Allocation
@@ -155,10 +159,10 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Spending Breakdown Bar */}
-      <div className="glass-card-static dash-chart-card animate-fade-in-up delay-3">
+      {/* Spending Breakdown Bar - Takes full width */}
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card dash-chart-card bento-col-span-full">
         <h3 className="dash-chart-title">
           <span className="material-symbols-rounded icon-sm">bar_chart</span>
           Spending Breakdown (This Month)
@@ -176,10 +180,10 @@ export default function Dashboard() {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-      </div>
+      </motion.div>
 
-      {/* Goals Progress */}
-      <div className="glass-card-static dash-chart-card animate-fade-in-up delay-4">
+      {/* Goals Progress - Takes full width */}
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card dash-chart-card bento-col-span-full">
         <h3 className="dash-chart-title">
           <span className="material-symbols-rounded icon-sm">flag</span>
           Financial Goals
@@ -205,7 +209,7 @@ export default function Dashboard() {
             );
           })}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

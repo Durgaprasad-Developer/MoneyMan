@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceLine } from 'recharts';
 import { useApi } from '../../hooks/useApi';
 import { postApi } from '../../hooks/useApi';
 import { formatCurrency, formatCompact } from '../../utils/formatters';
 import './GoalSimulator.css';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 10 },
+  show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+};
 
 export default function GoalSimulator() {
   const { data: profileData } = useApi('/api/profile');
@@ -40,16 +51,21 @@ export default function GoalSimulator() {
   const goals = profileData.goals || [];
 
   return (
-    <div className="page-content page-enter">
-      <div className="section-title">
+    <motion.div 
+      className="page-content"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.div variants={itemVariants} className="section-title">
         <span className="material-symbols-rounded icon">target</span> Goal Simulator
-      </div>
-      <p className="sim-subtitle">
+      </motion.div>
+      <motion.p variants={itemVariants} className="sim-subtitle">
         Drag the slider to see how changing your monthly investment affects your goal timeline.
-      </p>
+      </motion.p>
 
       {/* Goal selector */}
-      <div className="sim-goal-selector">
+      <motion.div variants={itemVariants} className="sim-goal-selector">
         {goals.map(goal => (
           <button
             key={goal.name}
@@ -62,10 +78,10 @@ export default function GoalSimulator() {
             {goal.name}
           </button>
         ))}
-      </div>
+      </motion.div>
 
       {/* Sliders */}
-      <div className="glass-card-static sim-controls animate-fade-in-up">
+      <motion.div variants={itemVariants} className="glass-card-static sim-controls">
         <div className="sim-slider-group">
           <div className="sim-slider-header">
             <label>Monthly Investment</label>
@@ -107,21 +123,28 @@ export default function GoalSimulator() {
             <span>18% (Equity)</span>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Simulation Results */}
-      {simulation && !simLoading && (
-        <div className="sim-results animate-fade-in-up delay-1">
-          {/* Key metrics */}
-          <div className="sim-metrics-grid">
-            <div className="glass-card sim-metric">
+      <AnimatePresence mode="wait">
+        {simulation && !simLoading && (
+          <motion.div 
+            className="sim-results bento-grid" 
+            style={{ marginTop: 'var(--space-md)' }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            {/* Key metrics */}
+            <motion.div whileHover={{ scale: 1.02 }} className="glass-card sim-metric bento-col-span-2">
               <div className="sim-metric-icon">
                 <span className="material-symbols-rounded" style={{ color: 'var(--accent-blue)' }}>calendar_month</span>
               </div>
               <div className="stat-value gradient-text">{simulation.monthsToGoal}</div>
               <div className="stat-label">Months to Goal</div>
-            </div>
-            <div className="glass-card sim-metric">
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.02 }} className="glass-card sim-metric bento-col-span-2">
               <div className="sim-metric-icon">
                 <span className="material-symbols-rounded" style={{ color: simulation.onTrack ? 'var(--accent-teal)' : 'var(--accent-red)' }}>
                   {simulation.onTrack ? 'check_circle' : 'warning'}
@@ -131,18 +154,10 @@ export default function GoalSimulator() {
                 {simulation.onTrack ? `${simulation.monthsAheadOrBehind}mo early` : `${Math.abs(simulation.monthsAheadOrBehind)}mo late`}
               </div>
               <div className="stat-label">{simulation.onTrack ? 'Ahead of Schedule' : 'Behind Schedule'}</div>
-            </div>
-            <div className="glass-card sim-metric">
-              <div className="sim-metric-icon">
-                <span className="material-symbols-rounded" style={{ color: 'var(--accent-purple)' }}>savings</span>
-              </div>
-              <div className="stat-value" style={{ color: 'var(--accent-purple)' }}>{formatCompact(simulation.wealthGained)}</div>
-              <div className="stat-label">Wealth Gained</div>
-            </div>
-          </div>
+            </motion.div>
 
-          {/* Projection chart */}
-          <div className="glass-card-static sim-chart-card animate-fade-in-up delay-2">
+            {/* Projection chart */}
+            <motion.div whileHover={{ scale: 1.01 }} className="glass-card-static sim-chart-card bento-col-span-2" style={{ gridColumn: 'span 2' }}>
             <h3 className="sim-chart-title">Projected Growth</h3>
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={simulation.projections} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -160,10 +175,10 @@ export default function GoalSimulator() {
                 <Area type="monotone" dataKey="value" name="Portfolio Value" stroke="#4361ee" fill="url(#projGrad)" strokeWidth={2} dot={false} />
               </AreaChart>
             </ResponsiveContainer>
-          </div>
+          </motion.div>
 
           {/* Summary message */}
-          <div className="sim-summary glass-card animate-fade-in-up delay-3">
+          <motion.div whileHover={{ scale: 1.01 }} className="sim-summary glass-card bento-col-span-2">
             <div className="sim-summary-avatar">
               <span className="material-symbols-rounded" style={{ color: 'white', fontSize: 18 }}>psychology</span>
             </div>
@@ -173,16 +188,17 @@ export default function GoalSimulator() {
                 : `At ${formatCurrency(monthlyAmount)}/month, you'll need ${simulation.monthsToGoal} months to reach your ${simulation.goalName} goal — that's ${Math.abs(simulation.monthsAheadOrBehind)} months past your deadline. Try increasing your monthly amount.`
               }
             </p>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        </motion.div>
+        )}
+      </AnimatePresence>
 
       {simLoading && (
-        <div className="sim-loading">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="sim-loading">
           <div className="skeleton" style={{ height: 60, marginBottom: 8 }} />
           <div className="skeleton" style={{ height: 200 }} />
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }

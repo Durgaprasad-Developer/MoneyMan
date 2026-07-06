@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import AvatarFace from '../Avatar/AvatarFace';
 import { useSpeech } from '../../hooks/useSpeech';
 import { postApi } from '../../hooks/useApi';
@@ -110,7 +111,12 @@ export default function ChatPanel() {
   ];
 
   return (
-    <div className="chat-page page-enter">
+    <motion.div 
+      className="chat-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
       {/* Avatar header */}
       <div className="chat-avatar-section">
         <AvatarFace state={avatarState} mouthOpen={mouthOpen} size={120} />
@@ -125,33 +131,46 @@ export default function ChatPanel() {
 
       {/* Messages */}
       <div className="chat-messages">
-        {messages.map((msg, i) => (
-          <div key={i} className={`chat-msg chat-msg-${msg.role} animate-fade-in-up`}>
-            {msg.role === 'assistant' && (
+        <AnimatePresence initial={false}>
+          {messages.map((msg, i) => (
+            <motion.div 
+              key={i} 
+              className={`chat-msg chat-msg-${msg.role}`}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+            >
+              {msg.role === 'assistant' && (
+                <div className="chat-msg-avatar-mini">
+                  <span className="material-symbols-rounded" style={{ fontSize: 14, color: 'white' }}>psychology</span>
+                </div>
+              )}
+              <div className="chat-msg-bubble">
+                <div className="chat-msg-text">{msg.text}</div>
+                <div className="chat-msg-time">
+                  {new Date(msg.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+          {isLoading && (
+            <motion.div 
+              className="chat-msg chat-msg-assistant"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+            >
               <div className="chat-msg-avatar-mini">
                 <span className="material-symbols-rounded" style={{ fontSize: 14, color: 'white' }}>psychology</span>
               </div>
-            )}
-            <div className="chat-msg-bubble">
-              <div className="chat-msg-text">{msg.text}</div>
-              <div className="chat-msg-time">
-                {new Date(msg.timestamp).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+              <div className="chat-msg-bubble">
+                <div className="chat-typing">
+                  <span></span><span></span><span></span>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
-        {isLoading && (
-          <div className="chat-msg chat-msg-assistant animate-fade-in">
-            <div className="chat-msg-avatar-mini">
-              <span className="material-symbols-rounded" style={{ fontSize: 14, color: 'white' }}>psychology</span>
-            </div>
-            <div className="chat-msg-bubble">
-              <div className="chat-typing">
-                <span></span><span></span><span></span>
-              </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div ref={messagesEndRef} />
       </div>
 
@@ -207,6 +226,6 @@ export default function ChatPanel() {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

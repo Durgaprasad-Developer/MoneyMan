@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApi } from '../../hooks/useApi';
-import AvatarFace from '../Avatar/AvatarFace';
 import './NudgePanel.css';
 
 export default function NudgePanel() {
@@ -23,23 +23,33 @@ export default function NudgePanel() {
         <span className="badge badge-warning">{activeNudges.length}</span>
       </div>
       <div className="nudge-list">
+        <AnimatePresence>
         {activeNudges.map((nudge, i) => {
           const severityColors = {
             critical: 'var(--accent-red)',
             warning: 'var(--accent-yellow)',
             info: 'var(--accent-blue)'
           };
-          const color = severityColors[nudge.severity] || 'var(--accent-blue)';
+          const iconMap = {
+            critical: 'error',
+            warning: 'warning',
+            info: 'info'
+          };
+          const nudgeIcon = iconMap[nudge.severity] || 'info';
 
           return (
-            <div
+            <motion.div
               key={nudge.id}
-              className={`nudge-card animate-slide-right delay-${Math.min(i + 1, 3)}`}
-              style={{ borderLeftColor: color }}
+              className={`nudge-card neo-card-${nudge.severity}`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 24, delay: i * 0.1 }}
+              layout
             >
               <div className="nudge-card-top">
-                <div className="nudge-avatar-mini">
-                  <AvatarFace state="speaking" size={36} />
+                <div className="nudge-icon-wrap">
+                  <span className="material-symbols-rounded">{nudgeIcon}</span>
                 </div>
                 <div className="nudge-content">
                   <div className="nudge-short">{nudge.short_message}</div>
@@ -58,18 +68,27 @@ export default function NudgePanel() {
                 </button>
               </div>
 
-              {expanded[nudge.id] && (
-                <div className="nudge-expanded animate-fade-in">
-                  <p className="nudge-message">{nudge.avatar_message}</p>
-                  <button className="btn btn-secondary nudge-action-btn">
-                    <span className="material-symbols-rounded icon-sm">arrow_forward</span>
-                    {nudge.action_prompt}
-                  </button>
-                </div>
-              )}
-            </div>
+              <AnimatePresence>
+                {expanded[nudge.id] && (
+                  <motion.div 
+                    className="nudge-expanded"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <p className="nudge-message">{nudge.avatar_message}</p>
+                    <button className="btn btn-secondary nudge-action-btn">
+                      <span className="material-symbols-rounded icon-sm">arrow_forward</span>
+                      {nudge.action_prompt}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           );
         })}
+        </AnimatePresence>
       </div>
     </div>
   );

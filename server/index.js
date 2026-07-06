@@ -90,14 +90,14 @@ app.post('/api/chat', async (req, res) => {
     const systemPrompt = `You are MoneyMan, an AI wealth advisor for IDBI Bank.
     Keep responses extremely concise (max 2-3 sentences). Do not use markdown.
     User's financial context:
-    \${contextStr}
+    ${contextStr}
     `;
 
     try {
       const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': \`Bearer \${process.env.GROQ_API_KEY}\`,
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

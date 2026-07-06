@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApi } from '../../hooks/useApi';
 import './Recommendations.css';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 10 },
+  show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+};
 
 export default function RecommendationsList() {
   const { data: recommendations, loading } = useApi('/api/recommendations');
@@ -25,20 +36,34 @@ export default function RecommendationsList() {
   const priorityColor = { high: 'var(--accent-red)', medium: 'var(--accent-yellow)', low: 'var(--accent-blue)' };
 
   return (
-    <div className="page-content page-enter">
-      <div className="section-title">
+    <motion.div 
+      className="page-content bento-grid"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.div variants={itemVariants} className="bento-col-span-full section-title">
         <span className="material-symbols-rounded icon">tips_and_updates</span> Recommendations
-      </div>
-      <p className="rec-subtitle">
+      </motion.div>
+      <motion.p variants={itemVariants} className="rec-subtitle bento-col-span-full text-muted">
         Personalized insights based on your financial behaviour. Every recommendation explains <strong>why</strong> it matters.
-      </p>
+      </motion.p>
 
-      <div className="rec-list">
-        {recommendations.map((rec, i) => (
-          <div
+      {recommendations.map((rec, i) => {
+        const cardColors = {
+          high: 'card-red',
+          medium: 'card-yellow',
+          low: 'card-blue'
+        };
+        const colorClass = cardColors[rec.priority] || 'card-blue';
+        return (
+          <motion.div
             key={rec.id}
-            className={`glass-card-static rec-card animate-fade-in-up delay-${Math.min(i + 1, 5)}`}
+            variants={itemVariants}
+            whileHover={{ scale: 1.01 }}
+            className={`bento-card ${colorClass} rec-card bento-col-span-full`}
             onClick={() => toggleExpand(rec.id)}
+            layout
           >
             <div className="rec-card-header">
               <div className="rec-priority" style={{ color: priorityColor[rec.priority] }}>
@@ -56,12 +81,18 @@ export default function RecommendationsList() {
             {/* Explainable "WHY" — the core differentiator */}
             <div className={`rec-why-section ${expanded[rec.id] ? 'expanded' : ''}`}>
               <div className="rec-why-header">
-                <span className="material-symbols-rounded icon-sm" style={{ color: 'var(--accent-teal)' }}>psychology</span>
+                <span className="material-symbols-rounded icon-sm">psychology</span>
                 <span>Why this matters</span>
                 <span className="material-symbols-rounded icon-sm rec-chevron">expand_more</span>
               </div>
-              {expanded[rec.id] && (
-                <div className="rec-why-content animate-fade-in">
+              <AnimatePresence>
+                {expanded[rec.id] && (
+                  <motion.div 
+                    className="rec-why-content"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                  >
                   <div className="rec-why-text">
                     <span className="rec-why-label">Data Signal:</span>
                     {rec.why}
@@ -70,12 +101,13 @@ export default function RecommendationsList() {
                     <span className="material-symbols-rounded icon-sm" style={{ color: 'var(--accent-blue)' }}>trending_up</span>
                     <span><strong>Impact:</strong> {rec.impact}</span>
                   </div>
-                </div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
+          </motion.div>
+        );
+      })}
+    </motion.div>
   );
 }

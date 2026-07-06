@@ -1,9 +1,20 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { useApi } from '../../hooks/useApi';
 import { formatCurrency } from '../../utils/formatters';
 import { CATEGORY_COLORS, RISK_COLORS } from '../../utils/constants';
 import './BehaviourProfile.css';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 10 },
+  show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+};
 
 function RiskGauge({ score, category }) {
   const angle = (score / 100) * 180;
@@ -73,18 +84,23 @@ export default function BehaviourProfile() {
   }));
 
   return (
-    <div className="page-content page-enter">
-      <div className="section-title">
+    <motion.div 
+      className="page-content bento-grid"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.div variants={itemVariants} className="bento-col-span-full section-title">
         <span className="material-symbols-rounded icon">person_search</span> Behaviour Profile
-      </div>
+      </motion.div>
 
-      <div className="profile-subtitle animate-fade-in-up">
+      <motion.div variants={itemVariants} className="profile-subtitle bento-col-span-full text-muted">
         <span className="material-symbols-rounded icon-sm" style={{ color: 'var(--accent-teal)' }}>auto_awesome</span>
         Auto-generated from 6 months of transaction data — no questionnaire needed
-      </div>
+      </motion.div>
 
-      {/* Risk Gauge */}
-      <div className="glass-card profile-risk-card animate-fade-in-up delay-1">
+      {/* Risk Gauge - Takes full width */}
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card card-purple profile-risk-card bento-col-span-2">
         <h3 className="profile-card-title">Risk Profile</h3>
         <RiskGauge score={riskProfile.riskScore} category={riskProfile.riskCategory} />
         <div className="profile-ratios">
@@ -107,10 +123,10 @@ export default function BehaviourProfile() {
             <span className="profile-ratio-label">Spending {riskProfile.spendingRatio}%</span>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Spending Breakdown */}
-      <div className="glass-card-static profile-spending-card animate-fade-in-up delay-2">
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card profile-spending-card bento-col-span-2">
         <h3 className="profile-card-title">Spending Breakdown</h3>
         <div className="profile-spending-row">
           <ResponsiveContainer width="45%" height={140}>
@@ -133,10 +149,10 @@ export default function BehaviourProfile() {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Behavioural Insights */}
-      <div className="glass-card-static profile-insights-card animate-fade-in-up delay-3">
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card profile-insights-card bento-col-span-2">
         <h3 className="profile-card-title">
           <span className="material-symbols-rounded icon-sm" style={{ color: 'var(--accent-yellow)' }}>lightbulb</span>
           Behavioural Insights
@@ -157,10 +173,10 @@ export default function BehaviourProfile() {
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Trend Indicators */}
-      <div className="glass-card-static profile-trends-card animate-fade-in-up delay-4">
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card profile-trends-card bento-col-span-2">
         <h3 className="profile-card-title">Category Trends (6 Month)</h3>
         <div className="profile-trends-grid">
           {Object.entries(trends).filter(([cat]) => cat !== 'Income').map(([cat, trend]) => {
@@ -182,7 +198,7 @@ export default function BehaviourProfile() {
             );
           })}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

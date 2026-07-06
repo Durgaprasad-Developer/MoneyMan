@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from './context/ThemeContext';
 import Dashboard from './components/Dashboard/Dashboard';
 import ChatPanel from './components/Chat/ChatPanel';
 import BehaviourProfile from './components/Profile/BehaviourProfile';
@@ -7,88 +9,90 @@ import GoalSimulator from './components/GoalSimulator/GoalSimulator';
 import NudgePanel from './components/Nudges/NudgePanel';
 import { PAGES } from './utils/constants';
 
+// Framer Motion variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  },
+  exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+};
+
 function HomePage({ setCurrentPage }) {
   return (
-    <div className="page-content page-enter">
-      {/* Welcome section */}
-      <div className="home-welcome animate-fade-in-up">
+    <motion.div 
+      className="page-content bento-grid"
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      exit="exit"
+    >
+      {/* Welcome section spanning full width */}
+      <motion.div variants={itemVariants} className="bento-col-span-full home-welcome">
         <div className="home-greeting">
           <span className="home-greeting-text">Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 17 ? 'Afternoon' : 'Evening'},</span>
-          <h1 className="home-name gradient-text">Rahul</h1>
+          <h1 className="home-name">Rahul</h1>
         </div>
         <div className="home-avatar-badge">
-          <span className="material-symbols-rounded" style={{ color: 'white', fontSize: 20 }}>psychology</span>
+          <span className="material-symbols-rounded" style={{ color: 'white', fontSize: 32 }}>psychology</span>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Nudges (proactive alerts) */}
-      <NudgePanel />
+      {/* Quick Stats side by side */}
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.02 }} className="bento-card card-blue home-stat">
+        <span className="material-symbols-rounded icon">account_balance_wallet</span>
+        <div>
+          <div className="stat-value" style={{ fontSize: '1.2rem' }}>₹5.0L</div>
+          <div className="stat-label text-muted">Portfolio</div>
+        </div>
+      </motion.div>
 
-      {/* Quick Stats */}
-      <div className="home-stats animate-fade-in-up delay-1">
-        <div className="glass-card home-stat">
-          <span className="material-symbols-rounded icon" style={{ color: 'var(--accent-blue)' }}>account_balance_wallet</span>
-          <div>
-            <div className="stat-value gradient-text" style={{ fontSize: '1.1rem' }}>₹5.0L</div>
-            <div className="stat-label">Portfolio</div>
-          </div>
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.02 }} className="bento-card card-yellow home-stat">
+        <span className="material-symbols-rounded icon">speed</span>
+        <div>
+          <div className="stat-value">42</div>
+          <div className="stat-label text-muted">Risk Score</div>
         </div>
-        <div className="glass-card home-stat">
-          <span className="material-symbols-rounded icon" style={{ color: 'var(--accent-teal)' }}>speed</span>
-          <div>
-            <div className="stat-value" style={{ fontSize: '1.1rem', color: 'var(--accent-teal)' }}>42</div>
-            <div className="stat-label">Risk Score</div>
-          </div>
-        </div>
-      </div>
+      </motion.div>
 
-      {/* Feature cards */}
-      <div className="home-features animate-fade-in-up delay-2">
-        <div className="home-feature-card" style={{ background: 'linear-gradient(135deg, rgba(67, 97, 238, 0.12), rgba(123, 47, 247, 0.08))' }}>
-          <div className="home-feature-icon" style={{ background: 'rgba(67, 97, 238, 0.2)' }}>
-            <span className="material-symbols-rounded" style={{ color: 'var(--accent-blue)' }}>auto_awesome</span>
-          </div>
-          <div className="home-feature-info">
-            <h3>AI Behaviour Analysis</h3>
-            <p>Your spending & investment patterns auto-analyzed from 6 months of transactions</p>
-          </div>
+      {/* Feature cards spanning full width */}
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card card-purple bento-col-span-full bento-feature">
+        <div className="home-feature-icon" style={{ background: 'rgba(139, 92, 246, 0.1)' }}>
+          <span className="material-symbols-rounded icon">auto_awesome</span>
         </div>
-        <div className="home-feature-card" style={{ background: 'linear-gradient(135deg, rgba(6, 214, 160, 0.12), rgba(4, 179, 129, 0.08))' }}>
-          <div className="home-feature-icon" style={{ background: 'rgba(6, 214, 160, 0.2)' }}>
-            <span className="material-symbols-rounded" style={{ color: 'var(--accent-teal)' }}>psychology</span>
-          </div>
-          <div className="home-feature-info">
-            <h3>Explainable Advice</h3>
-            <p>Every recommendation comes with a data-driven "why" — transparent and auditable</p>
-          </div>
+        <div className="home-feature-info">
+          <h3>AI Behaviour Analysis</h3>
+          <p className="text-muted">Your spending & investment patterns auto-analyzed from 6 months of transactions</p>
         </div>
-        <div className="home-feature-card" style={{ background: 'linear-gradient(135deg, rgba(255, 107, 53, 0.12), rgba(255, 209, 102, 0.08))' }}>
-          <div className="home-feature-icon" style={{ background: 'rgba(255, 107, 53, 0.2)' }}>
-            <span className="material-symbols-rounded" style={{ color: 'var(--accent-orange)' }}>notifications_active</span>
-          </div>
-          <div className="home-feature-info">
-            <h3>Proactive Nudges</h3>
-            <p>MoneyMan reaches out when it spots changes — no need to ask</p>
-          </div>
-        </div>
-      </div>
+      </motion.div>
 
-      {/* IDBI integration callout */}
-      <div className="glass-card home-integration animate-fade-in-up delay-3">
-        <div className="home-integration-badge">
-          <span className="material-symbols-rounded" style={{ color: 'var(--accent-teal)', fontSize: 16 }}>verified</span>
-          <span>IDBI Bank Integration Ready</span>
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card card-green bento-col-span-full bento-feature">
+        <div className="home-feature-icon" style={{ background: 'rgba(16, 185, 129, 0.1)' }}>
+          <span className="material-symbols-rounded icon">psychology</span>
         </div>
-        <p className="home-integration-text">
-          MoneyMan is designed as a module that plugs directly into IDBI's mobile banking app via APIs. It uses sandbox banking APIs and works with synthetic datasets.
-        </p>
-      </div>
-    </div>
+        <div className="home-feature-info">
+          <h3>Explainable Advice</h3>
+          <p className="text-muted">Every recommendation comes with a data-driven "why" — transparent and auditable</p>
+        </div>
+      </motion.div>
+
+      {/* Nudges taking full width */}
+      <motion.div variants={itemVariants} className="bento-col-span-full">
+        <NudgePanel />
+      </motion.div>
+    </motion.div>
   );
 }
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState(PAGES.HOME);
+  const { theme, toggleTheme } = useTheme();
 
   const renderPage = () => {
     switch (currentPage) {
@@ -113,18 +117,22 @@ export default function App() {
           </div>
         </div>
         <div className="top-nav-actions">
-          <button className="btn-ghost notification-dot" onClick={() => setCurrentPage(PAGES.PROFILE)}>
+          <motion.button whileTap={{ scale: 0.9 }} className="btn-ghost" onClick={toggleTheme}>
+            <span className="material-symbols-rounded icon">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
+          </motion.button>
+          <motion.button whileTap={{ scale: 0.9 }} className="btn-ghost notification-dot" onClick={() => setCurrentPage(PAGES.PROFILE)}>
             <span className="material-symbols-rounded icon">notifications</span>
-          </button>
-          <button className="btn-ghost" onClick={() => setCurrentPage(PAGES.PROFILE)}>
-            <span className="material-symbols-rounded icon">account_circle</span>
-          </button>
+          </motion.button>
         </div>
       </nav>
 
-      {/* Page Content */}
-      <main key={currentPage}>
-        {renderPage()}
+      {/* Page Content with AnimatePresence */}
+      <main>
+        <AnimatePresence mode="wait">
+          <motion.div key={currentPage} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.2 }}>
+            {renderPage()}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Bottom Navigation */}
@@ -173,6 +181,14 @@ export default function App() {
         >
           <span className="material-symbols-rounded icon">target</span>
           <span>Goals</span>
+        </button>
+
+        <button
+          className="bottom-nav-item bottom-nav-theme-toggle"
+          onClick={toggleTheme}
+          title="Toggle Theme"
+        >
+          <span className="material-symbols-rounded icon">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
         </button>
       </nav>
     </div>
