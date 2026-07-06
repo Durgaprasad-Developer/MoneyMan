@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const { buildProfile } = require('./engines/profiling');
 const { generateRecommendations } = require('./engines/recommendations');
@@ -192,6 +193,15 @@ app.get('/api/dashboard', (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
+// Serve static assets in production
+const distPath = path.join(__dirname, '../dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get(/(.*)/, (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
