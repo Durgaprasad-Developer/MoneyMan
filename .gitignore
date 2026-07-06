@@ -5,3 +5,6 @@ dist/
 .DS_Store
 *.pdf
 pdfstext.md
+generate_pdf.js
+take_screenshots.js
+screenshots/
