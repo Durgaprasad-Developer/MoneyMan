@@ -1,0 +1,99 @@
+.avatar-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: float 3s ease-in-out infinite;
+}
+
+.avatar-svg {
+  width: 80%;
+  height: 80%;
+  transition: filter 0.3s ease;
+}
+
+.avatar-mouth {
+  transition: all 0.1s ease;
+}
+
+/* Glow rings */
+.avatar-glow-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.ring-1 {
+  inset: -6px;
+  animation: ringPulse 3s ease-in-out infinite;
+}
+
+.ring-2 {
+  inset: -14px;
+  opacity: 0.15;
+  animation: ringPulse 3s ease-in-out infinite 0.5s;
+}
+
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.2; }
+  50% { transform: scale(1.05); opacity: 0.35; }
+}
+
+/* Listening ripple */
+.avatar-ripple {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid;
+  opacity: 0;
+  animation: avatarRipple 1.5s ease-out infinite;
+}
+
+.delay-ripple {
+  animation-delay: 0.75s;
+}
+
+@keyframes avatarRipple {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* State-specific breathing */
+.avatar-idle .avatar-svg {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.avatar-speaking .avatar-svg {
+  animation: speakBounce 0.4s ease-in-out infinite;
+}
+
+.avatar-thinking .avatar-svg {
+  animation: thinkPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+@keyframes speakBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.01); }
+}
+
+@keyframes thinkPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.98); opacity: 0.85; }
+}
+
+/* State label */
+.avatar-state-label {
+  position: absolute;
+  bottom: -8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}

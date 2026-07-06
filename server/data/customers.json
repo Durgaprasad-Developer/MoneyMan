@@ -1,0 +1,29 @@
+[
+  {
+    "id": "CUST001",
+    "name": "Rahul Sharma",
+    "age": 28,
+    "occupation": "Software Engineer",
+    "monthlyIncome": 85000,
+    "accountType": "Savings",
+    "joinDate": "2023-03-15",
+    "currentBalance": 245000,
+    "portfolio": {
+      "equity": { "value": 180000, "allocation": 36, "funds": ["HDFC Equity Fund", "Axis Bluechip"] },
+      "debt": { "value": 120000, "allocation": 24, "funds": ["ICICI Prudential Bond", "SBI Magnum"] },
+      "gold": { "value": 50000, "allocation": 10, "funds": ["SBI Gold ETF"] },
+      "fixedDeposits": { "value": 100000, "allocation": 20, "maturityDate": "2027-03-15" },
+      "savings": { "value": 50000, "allocation": 10 }
+    },
+    "goals": [
+      { "name": "Emergency Fund", "target": 500000, "current": 150000, "deadline": "2026-12-31" },
+      { "name": "Car Purchase", "target": 800000, "current": 220000, "deadline": "2028-06-30" },
+      { "name": "Home Down Payment", "target": 2000000, "current": 180000, "deadline": "2030-12-31" }
+    ],
+    "preferences": {
+      "riskTolerance": null,
+      "investmentHorizon": null,
+      "language": "en"
+    }
+  }
+]

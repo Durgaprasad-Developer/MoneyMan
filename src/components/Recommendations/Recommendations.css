@@ -1,0 +1,113 @@
+.rec-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-bottom: var(--space-md);
+  line-height: 1.5;
+}
+
+.rec-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.rec-card {
+  padding: var(--space-md) !important;
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.rec-card:hover {
+  border-color: var(--border-accent);
+}
+
+.rec-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.rec-priority {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rec-title {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.rec-action {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--space-sm);
+}
+
+/* WHY section */
+.rec-why-section {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+.rec-why-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--accent-teal);
+  cursor: pointer;
+}
+
+.rec-chevron {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+}
+
+.rec-why-section.expanded .rec-chevron {
+  transform: rotate(180deg);
+}
+
+.rec-why-content {
+  margin-top: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(6, 214, 160, 0.04);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(6, 214, 160, 0.1);
+}
+
+.rec-why-text {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-sm);
+}
+
+.rec-why-label {
+  display: block;
+  font-weight: 700;
+  color: var(--accent-teal);
+  margin-bottom: 2px;
+  font-size: var(--font-size-xs);
+}
+
+.rec-impact {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding-top: var(--space-sm);
+  border-top: 1px dashed var(--border-subtle);
+}
