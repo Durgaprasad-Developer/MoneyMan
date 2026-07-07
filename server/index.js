@@ -1,3 +1,9 @@
+if (typeof process.loadEnvFile === 'function') {
+  try {
+    process.loadEnvFile();
+  } catch (e) {}
+}
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -203,7 +209,7 @@ if (fs.existsSync(distPath)) {
   });
 }
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {
   console.log(`MoneyMan API server running on port ${PORT}`);
 });
