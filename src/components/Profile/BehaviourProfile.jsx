@@ -20,14 +20,14 @@ function RiskGauge({ score, category }) {
   const angle = (score / 100) * 180;
   const color = RISK_COLORS[category] || '#4361ee';
   
-  // Arc path calculation
+  // Arc path calculation — SVG Y-axis is inverted (down = positive)
   const cx = 80, cy = 75, r = 55;
   const startAngle = Math.PI;
   const endAngle = Math.PI - (angle * Math.PI / 180);
   const x1 = cx + r * Math.cos(startAngle);
-  const y1 = cy + r * Math.sin(startAngle);
+  const y1 = cy - r * Math.sin(startAngle);
   const x2 = cx + r * Math.cos(endAngle);
-  const y2 = cy + r * Math.sin(endAngle);
+  const y2 = cy - r * Math.sin(endAngle);
   const largeArc = angle > 180 ? 1 : 0;
 
   return (
@@ -37,7 +37,7 @@ function RiskGauge({ score, category }) {
         <path
           d={`M 25 75 A 55 55 0 0 1 135 75`}
           fill="none"
-          stroke="rgba(99,110,180,0.15)"
+          stroke="rgba(0,0,0,0.08)"
           strokeWidth="10"
           strokeLinecap="round"
         />
@@ -100,27 +100,36 @@ export default function BehaviourProfile() {
       </motion.div>
 
       {/* Risk Gauge - Takes full width */}
-      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card card-purple profile-risk-card bento-col-span-2">
+      <motion.div variants={itemVariants} whileHover={{ scale: 1.01 }} className="bento-card profile-risk-card bento-col-span-2">
         <h3 className="profile-card-title">Risk Profile</h3>
         <RiskGauge score={riskProfile.riskScore} category={riskProfile.riskCategory} />
         <div className="profile-ratios">
           <div className="profile-ratio">
+            <div className="profile-ratio-header">
+              <span className="profile-ratio-name">Investment</span>
+              <span className="profile-ratio-pct">{riskProfile.investmentRatio}%</span>
+            </div>
             <div className="profile-ratio-bar">
               <div className="profile-ratio-fill" style={{ width: `${riskProfile.investmentRatio}%`, background: 'var(--accent-blue)' }} />
             </div>
-            <span className="profile-ratio-label">Investment {riskProfile.investmentRatio}%</span>
           </div>
           <div className="profile-ratio">
+            <div className="profile-ratio-header">
+              <span className="profile-ratio-name">Savings</span>
+              <span className="profile-ratio-pct">{riskProfile.savingsRatio}%</span>
+            </div>
             <div className="profile-ratio-bar">
               <div className="profile-ratio-fill" style={{ width: `${riskProfile.savingsRatio}%`, background: 'var(--accent-teal)' }} />
             </div>
-            <span className="profile-ratio-label">Savings {riskProfile.savingsRatio}%</span>
           </div>
           <div className="profile-ratio">
+            <div className="profile-ratio-header">
+              <span className="profile-ratio-name">Spending</span>
+              <span className="profile-ratio-pct">{Math.min(riskProfile.spendingRatio, 100)}%</span>
+            </div>
             <div className="profile-ratio-bar">
               <div className="profile-ratio-fill" style={{ width: `${Math.min(riskProfile.spendingRatio, 100)}%`, background: 'var(--accent-red)' }} />
             </div>
-            <span className="profile-ratio-label">Spending {riskProfile.spendingRatio}%</span>
           </div>
         </div>
       </motion.div>

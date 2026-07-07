@@ -1,3 +1,8 @@
+/* ============================================================
+   Dashboard — IDBI Premium Style
+   ============================================================ */
+
+/* === Summary Grid === */
 .dash-summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -26,29 +31,38 @@
   font-size: 20px;
 }
 
+/* === Chart Cards === */
 .dash-chart-card {
   margin-bottom: var(--space-md);
   padding: var(--space-md) !important;
 }
 
 .dash-chart-title {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
   margin-bottom: var(--space-md);
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
+.dash-chart-title .material-symbols-rounded {
+  color: var(--brand-primary);
+  font-size: 16px;
+}
+
 .dash-chart-legend {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-sm);
   margin-top: var(--space-sm);
   font-size: var(--font-size-xs);
   color: var(--text-muted);
+  flex-wrap: wrap;
 }
 
 .legend-dot {
@@ -56,54 +70,37 @@
   height: 8px;
   border-radius: 50%;
   display: inline-block;
+  flex-shrink: 0;
 }
 
-.chart-tooltip {
-  background: rgba(17, 22, 64, 0.95);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  font-size: var(--font-size-xs);
-}
+/* Chart tooltip is defined in index.css (.chart-tooltip) */
 
-.chart-tooltip-label {
-  color: var(--text-muted);
-  margin-bottom: 4px;
-  font-weight: 600;
-}
-
-.chart-tooltip-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--text-primary);
-}
-
-.chart-tooltip-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-/* Portfolio row */
+/* === Portfolio Row === */
 .dash-portfolio-row {
   display: flex;
   align-items: center;
+  gap: var(--space-md);
 }
 
 .dash-portfolio-legend {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .portfolio-legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: var(--font-size-xs);
+}
+
+.portfolio-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .portfolio-legend-name {
@@ -114,9 +111,10 @@
 .portfolio-legend-val {
   font-weight: 700;
   color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Goals */
+/* === Goals List === */
 .dash-goals-list {
   display: flex;
   flex-direction: column;
@@ -126,7 +124,7 @@
 .dash-goal-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .dash-goal-header {
@@ -138,27 +136,34 @@
 .dash-goal-name {
   font-size: var(--font-size-sm);
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 .dash-goal-pct {
   font-size: var(--font-size-sm);
   font-weight: 800;
+  color: var(--brand-primary);
+  font-variant-numeric: tabular-nums;
 }
 
 .dash-goal-amounts {
   display: flex;
   justify-content: space-between;
   font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-goal-target {
+  font-weight: 600;
   color: var(--text-secondary);
 }
 
-/* Skeleton */
+/* Skeleton overrides (also in index.css) */
 .skeleton-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-sm);
 }
 
-.skeleton-card {
-  height: 80px;
-}
+.skeleton-card { height: 80px; }

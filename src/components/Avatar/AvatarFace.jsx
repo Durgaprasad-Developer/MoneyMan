@@ -28,17 +28,17 @@ export default function AvatarFace({ state = 'idle', mouthOpen = false, size = 1
 
   // Colors based on state
   const glowColor = {
-    idle: 'rgba(67, 97, 238, 0.4)',
-    speaking: 'rgba(6, 214, 160, 0.5)',
+    idle:      'rgba(13, 148, 136, 0.4)',
+    speaking:  'rgba(13, 148, 136, 0.5)',
     listening: 'rgba(255, 107, 53, 0.5)',
-    thinking: 'rgba(123, 47, 247, 0.5)'
+    thinking:  'rgba(13, 148, 136, 0.45)'
   }[state];
 
   const ringColor = {
-    idle: '#4361ee',
-    speaking: '#06d6a0',
+    idle:      '#0D9488',
+    speaking:  '#0D9488',
     listening: '#ff6b35',
-    thinking: '#7b2ff7'
+    thinking:  '#0F766E'
   }[state];
 
   return (
